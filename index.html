@@ -3,15 +3,87 @@
 <head>
   <meta charset="UTF-8">
   <title>Abrir Porta Remotamente</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <style>
-    body { font-family: Arial, sans-serif; background: #f4f4f4; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; }
-    .header { margin-bottom: 30px; text-align: center; }
-    .header h1 { margin: 0; font-size: 2em; color: #007bff; }
-    .header h2 { margin: 10px 0 0 0; font-size: 1.3em; color: #333; }
-    .header h3 { margin: 10px 0 0 0; font-size: 1.1em; color: #007bff; }
-    button { background: #007bff; color: #fff; border: none; border-radius: 12px; padding: 20px 40px; font-size: 20px; cursor: pointer; }
-    button:active { background: #0056b3; }
-    #status { margin-top: 20px; font-size: 16px; min-height: 22px; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+    .header {
+      margin-bottom: 40px;
+      text-align: center;
+      padding: 0 15px;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 3em;
+      color: #007bff;
+      line-height: 1.1;
+    }
+    .header h2 {
+      margin: 10px 0 0 0;
+      font-size: 1.8em;
+      color: #333;
+      line-height: 1.2;
+    }
+    .header h3 {
+      margin: 10px 0 0 0;
+      font-size: 1.5em;
+      color: #007bff;
+      line-height: 1.2;
+    }
+    button {
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 16px;
+      padding: 25px 60px;
+      font-size: 2.5em;
+      cursor: pointer;
+      max-width: 90vw;
+      width: 400px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      user-select: none;
+      transition: background-color 0.3s ease;
+    }
+    button:active {
+      background: #0056b3;
+    }
+    #status {
+      margin-top: 30px;
+      font-size: 1.8em;
+      min-height: 28px;
+      color: #444;
+      text-align: center;
+      padding: 0 10px;
+    }
+    @media (max-width: 500px) {
+      .header h1 {
+        font-size: 2.5em;
+      }
+      .header h2 {
+        font-size: 1.5em;
+      }
+      .header h3 {
+        font-size: 1.3em;
+      }
+      button {
+        width: 90vw;
+        padding: 20px;
+        font-size: 2em;
+      }
+      #status {
+        font-size: 1.4em;
+      }
+    }
   </style>
 </head>
 <body>
@@ -67,3 +139,4 @@
   </script>
 </body>
 </html>
+Atualiza página para melhorar visual mobile
