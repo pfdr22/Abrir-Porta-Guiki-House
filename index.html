@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Abrir Porta Remotamente</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f4f4; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; }
+    .header { margin-bottom: 30px; text-align: center; }
+    .header h1 { margin: 0; font-size: 2em; color: #007bff; }
+    .header h2 { margin: 10px 0 0 0; font-size: 1.3em; color: #333; }
+    .header h3 { margin: 10px 0 0 0; font-size: 1.1em; color: #007bff; }
+    button { background: #007bff; color: #fff; border: none; border-radius: 12px; padding: 20px 40px; font-size: 20px; cursor: pointer; }
+    button:active { background: #0056b3; }
+    #status { margin-top: 20px; font-size: 16px; min-height: 22px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>GUIKI HOUSE</h1>
+    <h2>CARREGAR PARA ABRIR A PORTA / PRESS TO OPEN THE DOOR</h2>
+    <h3>BEM-VINDO! WELCOME!</h3>
+  </div>
+  <button id="openDoorBtn">OPEN</button>
+  <div id="status"></div>
+
+  <script>
+    const deviceID = "b8d61a85e99c";
+    const apiKey = "MWRmODRmdWlk75D89DC74CDC87FCA20FF149C62FD17775728D5C6C047BB3A1FB3C6AFF78DCA6EE6DF217032E08F1";
+    const relayNum = 0;
+    const apiUrl = "https://shelly-85-eu.shelly.cloud/device/relay/control";
+    const status = document.getElementById('status');
+
+    document.getElementById('openDoorBtn').addEventListener('click', () => {
+      status.textContent = "A iniciar o comando de abertura...";
+
+      fetch(apiUrl, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: `id=${deviceID}&auth_key=${apiKey}&channel=${relayNum}&turn=on`
+      })
+      .then(response => response.json())
+      .then(data => {
+        status.textContent = "Comando ON enviado, a aguardar 2 segundos...";
+        setTimeout(() => {
+          fetch(apiUrl, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: `id=${deviceID}&auth_key=${apiKey}&channel=${relayNum}&turn=off`
+          })
+          .then(responseOff => responseOff.json())
+          .then(dataOff => {
+            if (dataOff && dataOff.isok) {
+              status.textContent = "Porta acionada com sucesso!";
+            } else {
+              status.textContent = "Falha ao desligar relé.";
+            }
+          })
+          .catch(() => {
+            status.textContent = "Erro na comunicação (OFF).";
+          });
+        }, 2000);
+      })
+      .catch(() => {
+        status.textContent = "Erro na comunicação (ON).";
+      });
+    });
+  </script>
+</body>
+</html>
