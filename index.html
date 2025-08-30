@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Abrir Porta Remotamente</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <style>
@@ -50,7 +50,7 @@
       cursor: pointer;
       max-width: 90vw;
       width: 400px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       user-select: none;
       transition: background-color 0.3s ease;
     }
@@ -95,48 +95,73 @@
   <button id="openDoorBtn">OPEN</button>
   <div id="status"></div>
 
+  <!-- Nova versão do SDK EmailJS -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script type="text/javascript">
+    emailjs.init('cfAZSDadyDL49kPAN'); // Public Key EmailJS
+  </script>
+
   <script>
     const deviceID = "b8d61a85e99c";
     const apiKey = "MWRmODRmdWlk75D89DC74CDC87FCA20FF149C62FD17775728D5C6C047BB3A1FB3C6AFF78DCA6EE6DF217032E08F1";
     const relayNum = 0;
     const apiUrl = "https://shelly-85-eu.shelly.cloud/device/relay/control";
-    const status = document.getElementById('status');
+    const status = document.getElementById("status");
 
-    document.getElementById('openDoorBtn').addEventListener('click', () => {
+    document.getElementById("openDoorBtn").addEventListener("click", () => {
       status.textContent = "A iniciar o comando de abertura...";
 
+      // Define as variáveis do template para enviar o email
+      const templateParams = {
+        name: "Sistema Guiki House",
+        time: new Date().toLocaleString(),
+        timestamp: new Date().toLocaleString(),
+        nome_da_variavel: "Abertura remota"
+      };
+
+      // Envia o email com EmailJS
+      emailjs
+        .send("service_guikihouse35", "template_ikzno79", templateParams)
+        .then(() => {
+          console.log("%cEmail enviado com sucesso!", "color: green");
+        })
+        .catch((err) => {
+          console.error("%cErro ao enviar email:", "color: red", err);
+        });
+
+      // Aciona o Shelly para abrir a porta
       fetch(apiUrl, {
-        method: 'POST',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: `id=${deviceID}&auth_key=${apiKey}&channel=${relayNum}&turn=on`
       })
-      .then(response => response.json())
-      .then(data => {
-        status.textContent = "Comando ON enviado, a aguardar 2 segundos...";
-        setTimeout(() => {
-          fetch(apiUrl, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-            body: `id=${deviceID}&auth_key=${apiKey}&channel=${relayNum}&turn=off`
-          })
-          .then(responseOff => responseOff.json())
-          .then(dataOff => {
-            if (dataOff && dataOff.isok) {
-              status.textContent = "Porta acionada com sucesso!";
-            } else {
-              status.textContent = "Falha ao desligar relé.";
-            }
-          })
-          .catch(() => {
-            status.textContent = "Erro na comunicação (OFF).";
-          });
-        }, 2000);
-      })
-      .catch(() => {
-        status.textContent = "Erro na comunicação (ON).";
-      });
+        .then((response) => response.json())
+        .then(() => {
+          status.textContent = "Comando ON enviado, a aguardar 2 segundos...";
+          setTimeout(() => {
+            fetch(apiUrl, {
+              method: "POST",
+              headers: { "Content-Type": "application/x-www-form-urlencoded" },
+              body: `id=${deviceID}&auth_key=${apiKey}&channel=${relayNum}&turn=off`
+            })
+              .then((responseOff) => responseOff.json())
+              .then((dataOff) => {
+                if (dataOff && dataOff.isok) {
+                  status.textContent = "Porta acionada com sucesso!";
+                } else {
+                  status.textContent = "Falha ao desligar relé.";
+                }
+              })
+              .catch(() => {
+                status.textContent = "Erro na comunicação (OFF).";
+              });
+          }, 2000);
+        })
+        .catch(() => {
+          status.textContent = "Erro na comunicação (ON).";
+        });
     });
   </script>
 </body>
 </html>
-Atualiza página para melhorar visual mobile
+
